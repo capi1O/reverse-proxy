@@ -34,7 +34,8 @@ dockers/
 	- URL : domain name (ex : `URL=domain.com`)
 	- SUBDOMAINS : comma-separted list of subdomains (ex : `SUBDOMAINS=www,ftp`)
 - make sure the host running the let's encrypt docker is reachable on ports 80 & 443 (redirect ports on router)
-- `docker-compose up -d`
+- create docker network : `docker network create letsencrypt_nginx-net`
+- start the container `docker-compose up -d`
 
 # add a new service (docker container running behind the reverse-proxy)
 
