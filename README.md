@@ -11,27 +11,15 @@ docker HTTPS nginx reverse-proxy
 
 The nginx reverse proxy docker manage HTTPS and redirect requests to correct docker containers based on hostname. It uses [lets-encrypt docker image](https://github.com/linuxserver/docker-letsencrypt)
 
-# setup
+# dependencies
 
-docker-compose.yml files placed in respective directories inside a dir named `dockers`
-
-- dockers/
-	- lets-encrypt/
-		- [docker-compose.yml](dockers/lets-encrypt/docker-compose.yml)
-		- config <= folder containing required configuration files and generated SSL certificates
-		- nginx-config.conf <= shortcut to lets-encrypt internal conf file
-	- dockerA/
-		- docker-compose.yml
-		- conf-files...
-	- dockerB/
-		- docker-compose.yml
-	- ...
-
+- [docker](https://github.com/docker/docker-ce). for ubuntu : `curl -s https://gist.githubusercontent.com/monkeydri/43c7533b4c3b854495416a1e607fc5bf/raw/c814934ff15fba474f38fb41e52285c056169ef0/docker-setup.sh | bash`
+- [docker-compose](https://github.com/docker/compose). for ubuntu : `curl -s https://gist.githubusercontent.com/monkeydri/3c1c89d3c51d1692ef4df409ff6dc0d0/raw/ec34d23cd8bc1616157aad64714150ff719a9c10/docker-compose-setup.sh | bash`
 
 # quickstart
 
 - create directory where all docker config files will be stored : `mkdir dockers`
-- `git clone git@github.com:monkeydri/docker-https-nginx-reverse-proxy.git reverse-proxy && cd reverse-proxy`
+- `git clone git@github.com/monkeydri/docker-https-nginx-reverse-proxy.git reverse-proxy && cd reverse-proxy`
 - edit .env to fill required env vars
 	- EMAIL: admin email (ex : `URL=admin@domain.com`)
 	- URL : domain name (ex : `URL=domain.com`)
@@ -40,6 +28,20 @@ docker-compose.yml files placed in respective directories inside a dir named `do
 - run setup script `chmod +x setup.sh && ./setup.sh`
 
 # add a new service (docker container running behind the reverse-proxy)
+
+base setup : docker-compose.yml for each service are placed in respective directories inside a dir named `dockers`
+
+- dockers/
+	- reverse-proxy/
+		- [docker-compose.yml](docker-compose.yml)
+		- config <= folder containing required configuration files and generated SSL certificates
+		- nginx.conf <= shortcut to lets-encrypt internal conf file
+	- service-A/
+		- docker-compose.yml
+		- conf-files...
+	- service-B/
+		- docker-compose.yml
+	- ...
 
 - put the docker-compose.yml file in dockers/new-docker/
 
