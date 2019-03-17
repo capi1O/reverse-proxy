@@ -111,6 +111,10 @@ replace the lines `server_name subdomain.domain.com;` and `proxy_pass http://new
 
 - restart lets'encrypt docker nginx service : `cd ./lets-encrypt && docker-compose exec -it lets-encrypt s6-svc -h /var/run/s6/services/nginx`
 
+# ready to deploy services
+
+- [gitlab-server](https://github.com/monkeydri/gitlab-server)
+- [seafile-server](https://github.com/monkeydri/seafile-server)
 
 # sources
 
