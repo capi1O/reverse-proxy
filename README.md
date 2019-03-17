@@ -2,10 +2,12 @@ docker HTTPS nginx reverse-proxy
 
 # overview
 
-nginx reverse proxy docker
+
+- nginx reverse proxy docker
 	- docker container A
 	- docker container B
 	- docker container C
+
 
 The nginx reverse proxy docker manage HTTPS and redirect requests to correct docker containers based on hostname. It uses [lets-encrypt docker image](https://github.com/linuxserver/docker-letsencrypt)
 
@@ -13,29 +15,29 @@ The nginx reverse proxy docker manage HTTPS and redirect requests to correct doc
 
 docker-compose.yml files placed in respective directories inside a dir named `dockers`
 
-dockers/
-	lets-encrypt/
-		[docker-compose.yml](dockers/lets-encrypt/docker-compose.yml)
-		config <= folder containing required configuration files and generated SSL certificates
-		nginx-config.conf <= shortcut to lets-encrypt internal conf file
-	dockerA/
-		docker-compose.yml
-		conf-files...
-	dockerB/
-		docker-compose.yml
-		...
+- dockers/
+	- lets-encrypt/
+		- [docker-compose.yml](dockers/lets-encrypt/docker-compose.yml)
+		- config <= folder containing required configuration files and generated SSL certificates
+		- nginx-config.conf <= shortcut to lets-encrypt internal conf file
+	- dockerA/
+		- docker-compose.yml
+		- conf-files...
+	- dockerB/
+		- docker-compose.yml
+	- ...
 
 
 # quickstart
 
-- `git clone git@github.com:monkeydri/docker-https-nginx-reverse-proxy.git`
-- edit lets-encrypt/docker-compose.yml to fill required env vars
+- create directory where all docker config files will be stored : `mkdir dockers`
+- `git clone git@github.com:monkeydri/docker-https-nginx-reverse-proxy.git reverse-proxy && cd reverse-proxy`
+- edit .env to fill required env vars
 	- EMAIL: admin email (ex : `URL=admin@domain.com`)
 	- URL : domain name (ex : `URL=domain.com`)
 	- SUBDOMAINS : comma-separted list of subdomains (ex : `SUBDOMAINS=www,ftp`)
 - make sure the host running the let's encrypt docker is reachable on ports 80 & 443 (redirect ports on router)
-- create docker network : `docker network create letsencrypt_nginx-net`
-- start the container `docker-compose up -d`
+- run setup script `chmod +x setup.sh && ./setup.sh`
 
 # add a new service (docker container running behind the reverse-proxy)
 
@@ -58,7 +60,7 @@ networks:
 ```
 
 
-- add a block lets-encrypt docker nginx conf: config/nginx/site-confs/default. For easier access it can be symlinked at lets-encrypt dir level : `ln -s config/nginx/site-confs/default ./nginx.conf`
+- add a block at the end of the lets-encrypt docker nginx conf file `nginx.conf`
 
 template block :
 

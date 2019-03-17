@@ -11,9 +11,9 @@ services:
     environment:
       - PGID=1000 
       - PUID=1000
-      - EMAIL=admin@domain.com
-      - URL=domain.com
-      - SUBDOMAINS=www
+      - EMAIL="${EMAIL}"
+      - URL="${URL}"
+      - SUBDOMAINS="${DOMAIN}"
       - VALIDATION=http
       - TZ=Europe/Paris
     volumes:
