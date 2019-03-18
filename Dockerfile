@@ -1,6 +1,6 @@
 FROM ubuntu:18.04
 
-RUN apt-get update && apt install -y curl sudo dnsutils
+RUN apt-get update && apt install -y curl sudo
 
 # sudo without password
 USER root
@@ -15,8 +15,8 @@ USER user
 RUN mkdir -p /home/user/dockers/reverse-proxy
 WORKDIR /home/user/dockers/reverse-proxy
 
-# check WAN IP
-RUN dig +short myip.opendns.com @resolver1.opendns.com
+# check BUILD env vars
+RUN echo "${TEST_BUILD_VAR}"
 
 # install docker
 RUN curl -s https://gist.githubusercontent.com/monkeydri/43c7533b4c3b854495416a1e607fc5bf/raw/a4dfdb647e7753fd475350dfd588d3706de5c872/docker-setup.sh | bash
@@ -26,9 +26,9 @@ RUN curl -s https://gist.githubusercontent.com/monkeydri/3c1c89d3c51d1692ef4df40
 
 # establish a tunnel to a server listening on a known WAN IP which will redirect all incoming traffic to container (so it can receive the certificate challenge)
 EXPOSE 80 443
-# TODO
+# TODO ${SSH_KEY}
 
 # copy docker files
 COPY ./docker-compose.yml ./.env ./setup.sh /home/user/dockers/reverse-proxy/
 
-CMD ["/usr/bin/bash", "./setup.sh"]
+CMD ["/usr/bin/bash", "-c", "/home/user/dockers/reverse-proxy/setup.sh ${TEST_BUILD_VAR}"]

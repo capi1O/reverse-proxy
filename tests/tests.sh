@@ -1,6 +1,6 @@
 #!/bin/sh
 
-TEST_PASSED=true
+TEST_PASSED=$1
 
 # SSL certificates generation
 

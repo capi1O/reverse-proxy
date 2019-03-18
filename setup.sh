@@ -1,5 +1,7 @@
 #!/bin/bash
 
+TEST_PASSED=$1
+
 # /!\ fill required env vars in .env files before running this script
 
 # create docker network
