@@ -116,6 +116,10 @@ replace the lines `server_name subdomain.domain.com;` and `proxy_pass http://new
 - [gitlab-server](https://github.com/monkeydri/gitlab-server)
 - [seafile-server](https://github.com/monkeydri/seafile-server)
 
+# docker image [![Build Status](https://img.shields.io/docker/cloud/build/monkeydri/reverse-proxy.svg?style=flat-square)](https://hub.docker.com/r/monkeydri/reverse-proxy)
+
+[reverse-proxy](https://hub.docker.com/r/monkeydri/reverse-proxy) docker image, based on [Dockerfile](Dockerfile) is only meant to be used for test purposes (CI).
+
 # sources
 
 - https://blog.linuxserver.io/2017/11/28/how-to-setup-a-reverse-proxy-with-letsencrypt-ssl-for-all-your-docker-apps/
