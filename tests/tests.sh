@@ -1,10 +1,17 @@
 #!/bin/sh
 
-TEST_PASSED=$1
+TEST_PASSED=true
 
-# SSL certificates generation
+EMAIL=$1
+URL=$2
+SUBDOMAINS=$3
+
+# check that SSL certificate is correctly generated for domain
+# TODO : cat config dir and compare
 
 # xxxxx service reachability
+
+# email reception
 
 if [ "$TEST_PASSED" = true ] ; then
   echo -e "\\e[42m------------"

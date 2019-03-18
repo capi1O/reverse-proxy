@@ -1,9 +1,8 @@
-FROM monkeydri/reverse-proxy
+FROM ubuntu:18.04
 
 COPY ./tests.sh /tmp/
 
-# RUN echo "${TEST_BUILD_VAR}"
-
 WORKDIR /tmp
 
-CMD ["sh", "-c", "/tmp/tests.sh ${TEST_BUILD_VAR}"]
+# safe to pass env vars here because this image is not hosted on docker hub
+CMD ["sh", "-c", "/tmp/tests.sh ${EMAIL} ${URL} ${SUBDOMAINS}"]

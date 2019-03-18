@@ -118,13 +118,42 @@ replace the lines `server_name subdomain.domain.com;` and `proxy_pass http://new
 
 # tests [![Build Status](https://img.shields.io/docker/cloud/build/monkeydri/reverse-proxy.svg?style=flat-square)](https://hub.docker.com/r/monkeydri/reverse-proxy)
 
-This setup is run on a [docker container](https://hub.docker.com/r/monkeydri/reverse-proxy)  running ubuntu 18.04 on docker hub (`xxxx` domain). You can check the [Dockerfile](Dockerfile) (only used for testing purposes).
+## toolchain
 
-This is a cheap and simple alternative to running a full VM to test the setup.
+This setup is run on a [docker container](https://hub.docker.com/r/monkeydri/reverse-proxy) running ubuntu 18.04 on docker hub (`xxxx` domain). You can check the [Dockerfile](Dockerfile) (only used for testing purposes).
 
-Tests :
+Using a docker container and docker hub automated build with autotests is a cheap and simple alternative to running a full VM (ex with circle-CI) to test the setup.
+
+The [reverse-proxy](https://hub.docker.com/r/monkeydri/reverse-proxy) docker image is build on docker hub on each push and afterwards tests are run (still on docker hub) : [docker-compose.tests.yml](docker-compose.tests.yml) runs a container based on the previously built image alongside another container which runs tests against the first container.
+
+## connect the docker container to the world
+
+[serveo](https://serveo.net/) is used to proxy let's encrypt bot request to the test container.
+
+- generate SSH key pair
+- add an A record subdomain.domain.com => 159.89.214.31 (serveo.net)
+- add a TXT record authkeyfp=[fingerprint] where fingerprint is the SSH key fingerprint (ssh-keygen -l)
+
+source : https://serveo.net/
+
+## setup [build env vars in docker hub](https://docs.docker.com/docker-hub/builds/#environment-variables-for-builds)
+
+- EMAIL=admin@domain.com
+- URL=domain.com
+- SUBDOMAINS=subdomain
+- SSH_PUBLIC_KEY=
+- SSH_PRIVATE_KEY=
+
+where SSH_PUBLIC_KEY=$(cat ~/.ssh/id_rsa_serveo.pub) <= path to previsouly generated SSH public key
+and SSH_PRIVATE_KEY=$(cat ~/.ssh/id_rsa_serveo) <= path to previsouly generated SSH private key
+
+Those env vars are passed to the [reverse-proxy](https://hub.docker.com/r/monkeydri/reverse-proxy) container so it can connect to serveo on a custom domain.
+
+## tests actually run (see [tests.sh](tests/tests.sh))
+
 - [ ] SSL certificates generation
-- [ ] service reachability behind the reverse-proxy ().
+- [ ] service reachability behind the reverse-proxy ()
+- [ ] email reception
 
 # sources
 
