@@ -1,4 +1,4 @@
-docker HTTPS nginx reverse-proxy
+docker HTTPS nginx reverse-proxy setup
 
 # overview
 
@@ -24,7 +24,7 @@ The nginx reverse proxy docker manage HTTPS and redirect requests to correct doc
 	- EMAIL: admin email (ex : `URL=admin@domain.com`)
 	- URL : domain name (ex : `URL=domain.com`)
 	- SUBDOMAINS : comma-separted list of subdomains (ex : `SUBDOMAINS=www,ftp`)
-- make sure the host running the let's encrypt docker is reachable on ports 80 & 443 (redirect ports on router)
+- make sure the host running the let's encrypt docker is reachable on ports 80 & 443 (ex: redirect ports on router) and that every subdomain DNS records points to its WAN IP.
 - run setup script `chmod +x setup.sh && ./setup.sh`
 
 # add a new service (docker container running behind the reverse-proxy)
@@ -116,9 +116,15 @@ replace the lines `server_name subdomain.domain.com;` and `proxy_pass http://new
 - [gitlab-server](https://github.com/monkeydri/gitlab-server)
 - [seafile-server](https://github.com/monkeydri/seafile-server)
 
-# docker image [![Build Status](https://img.shields.io/docker/cloud/build/monkeydri/reverse-proxy.svg?style=flat-square)](https://hub.docker.com/r/monkeydri/reverse-proxy)
+# tests [![Build Status](https://img.shields.io/docker/cloud/build/monkeydri/reverse-proxy.svg?style=flat-square)](https://hub.docker.com/r/monkeydri/reverse-proxy)
 
-[reverse-proxy](https://hub.docker.com/r/monkeydri/reverse-proxy) docker image, based on [Dockerfile](Dockerfile) is only meant to be used for test purposes (CI).
+This setup is run on a [docker container](https://hub.docker.com/r/monkeydri/reverse-proxy)  running ubuntu 18.04 on docker hub (`xxxx` domain). You can check the [Dockerfile](Dockerfile) (only used for testing purposes).
+
+This is a cheap and simple alternative to running a full VM to test the setup.
+
+Tests :
+- [ ] SSL certificates generation
+- [ ] service reachability behind the reverse-proxy ().
 
 # sources
 

@@ -24,9 +24,11 @@ RUN curl -s https://gist.githubusercontent.com/monkeydri/43c7533b4c3b854495416a1
 # install docker-compose
 RUN curl -s https://gist.githubusercontent.com/monkeydri/3c1c89d3c51d1692ef4df409ff6dc0d0/raw/ec34d23cd8bc1616157aad64714150ff719a9c10/docker-compose-setup.sh | bash
 
+# establish a tunnel to a server listening on a known WAN IP which will redirect all incoming traffic to container (so it can receive the certificate challenge)
+EXPOSE 80 443
+# TODO
+
 # copy docker files
 COPY ./docker-compose.yml ./.env ./setup.sh /home/user/dockers/reverse-proxy/
-
-EXPOSE 80 443
 
 CMD ["/usr/bin/bash", "./setup.sh"]
