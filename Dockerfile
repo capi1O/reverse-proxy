@@ -4,6 +4,8 @@ FROM ubuntu:18.04
 RUN mkdir -p /tmp/dockers/reverse-proxy
 WORKDIR /tmp/dockers/reverse-proxy
 
+RUN apt-get update && apt install -y curl
+
 # install docker
 RUN curl -s https://gist.githubusercontent.com/monkeydri/43c7533b4c3b854495416a1e607fc5bf/raw/c814934ff15fba474f38fb41e52285c056169ef0/docker-setup.sh | bash
 
