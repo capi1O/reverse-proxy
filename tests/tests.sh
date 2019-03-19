@@ -1,13 +1,27 @@
 #!/bin/sh
 
-TEST_PASSED=true
+ALL_TESTS_PASSED=true
 
 EMAIL=$1
 URL=$2
 SUBDOMAINS=$3
 
-# 1. xxxxx reverse-proxy container reachability
-# launch web server (nginx or apache docker) on reverse-proxy docker and try to reach it on SUBDOMAINS[0].URL, compare output with dessired output
+REACHABILITY_OUTPUT="reverse-proxy reachable"
+
+# 1. reverse-proxy container reachability - try to reach it on SUBDOMAINS[0].URL:7357, compare output with desired output
+# netcat listening on 7357 on reverse-proxy docker, with SSH tunnel setup on port 7357 to serveo.net + A record setup on subdomain.
+IFS=', ' read -r -a subdomains <<< "${SUBDOMAINS}"
+for SUBDOMAIN in "${subdomains[@]}"
+do
+	OUTPUT=$(netcat ${SUBDOMAIN}.${URL} 7357)
+	if [ "$OUTPUT" == "$REACHABILITY_OUTPUT" ]; then
+		echo -e "\\e[92m${SUBDOMAIN}.${URL} reachable"
+	else
+		echo -e "\\e[91m${SUBDOMAIN}.${URL} not reachable"
+		ALL_TESTS_PASSED=false
+	fi
+done
+
 
 # 2. test SSL certificate generation for each subdomain
 # TODO : cat config dir and compare
@@ -17,14 +31,14 @@ SUBDOMAINS=$3
 
 # 4. email reception
 
-if [ "$TEST_PASSED" = true ] ; then
-  echo -e "\\e[42m------------"
-  echo -e "\\e[92mTests passed"
-  echo -e "\\e[42m------------"
-  exit 0
+if [ "$ALL_TESTS_PASSED" = true ]; then
+	echo -e "\\e[42m------------"
+	echo -e "\\e[92mAll tests passed"
+	echo -e "\\e[42m------------"
+	exit 0
 else
-  echo -e "\\e[41m------------"
-  echo -e "\\e[91mTests failed"
-  echo -e "\\e[41m------------"
-  exit 1
+	echo -e "\\e[41m------------"
+	echo -e "\\e[91mSome test failed"
+	echo -e "\\e[41m------------"
+	exit 1
 fi

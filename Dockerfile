@@ -1,6 +1,6 @@
 FROM ubuntu:18.04
 
-RUN apt-get update && apt install -y curl sudo openssh-client
+RUN apt-get update && apt install -y curl sudo netcat openssh-client
 
 # sudo without password
 USER root

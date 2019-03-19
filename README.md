@@ -151,11 +151,13 @@ Those env vars are passed to the [reverse-proxy](https://hub.docker.com/r/monkey
 
 ## tests actually run (see [tests.sh](tests/tests.sh))
 
+- [x] docker reachability on WAN (on test port 7357)
 - [ ] SSL certificates generation
-- [ ] service reachability behind the reverse-proxy ()
+- [ ] service reachability behind the reverse-proxy
 - [ ] email reception
 
 # sources
 
 - https://blog.linuxserver.io/2017/11/28/how-to-setup-a-reverse-proxy-with-letsencrypt-ssl-for-all-your-docker-apps/
 - https://github.com/linuxserver/docker-letsencrypt/issues/71
+- https://www.digitalocean.com/community/tutorials/how-to-use-netcat-to-establish-and-test-tcp-and-udp-connections-on-a-vps

@@ -9,8 +9,15 @@ TEST_MODE=${4:-"${TEST_MODE}"}
 SSH_PUBLIC_KEY=${5:-"${SSH_PUBLIC_KEY}"}
 SSH_PRIVATE_KEY=${6:-"${SSH_PRIVATE_KEY}"}
 
+REACHABILITY_OUTPUT="reverse-proxy reachable"
+
+
 # establish a SSH tunnel to serveo => will listen on WAN to redirect all incoming traffic to container (so it can receive SSL certificate challenges)
 if [$TEST_MODE]; then
+
+	# start a service listening on 7357 for reachability test
+	while true; do printf "${REACHABILITY_OUTPUT}" | netcat -l 7357; done
+
 	# add the SSH key pair
 	echo "$SSH_PRIVATE_KEY" > /home/user/.ssh/id_rsa && \
 	echo "$SSH_PUBLIC_KEY" > /home/user/.ssh/id_rsa.pub && \
@@ -22,8 +29,18 @@ if [$TEST_MODE]; then
 	IFS=', ' read -r -a subdomains <<< "${SUBDOMAINS}"
 	for SUBDOMAIN in "${subdomains[@]}"
 	do
-		ssh -R ${SUBDOMAIN}.${URL}:80:localhost:80 -R ${SUBDOMAIN}.${URL}:443:localhost:443 serveo.net
+		ssh -R ${SUBDOMAIN}.${URL}:7357:localhost:7357 -R ${SUBDOMAIN}.${URL}:80:localhost:80 -R ${SUBDOMAIN}.${URL}:443:localhost:443 serveo.net
 	done
+
+	# 7357 : reachability test
+	# test docker (sut) => subdomain.url:123 => serveo.net:123 <===ssh===> reverse-proxy (running on docker hub)
+
+	# 80 : HTTP domain validation
+	# let's encrypt bot => subdomain.url:80 => serveo.net:80 <===ssh===> reverse-proxy (running on docker hub)
+
+	# 443 : HTTPS connection
+	# client => subdomain.url:443 => serveo.net:443 <===ssh===> reverse-proxy (running on docker hub)
+
 fi
 
 # create docker network
