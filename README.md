@@ -120,7 +120,7 @@ replace the lines `server_name subdomain.domain.com;` and `proxy_pass http://new
 
 ## toolchain
 
-This setup is run on a [docker container](https://hub.docker.com/r/monkeydri/reverse-proxy) running ubuntu 18.04 on docker hub (`xxxx` domain). You can check the [Dockerfile](Dockerfile) (only used for testing purposes).
+This setup is run on a [docker container](https://hub.docker.com/r/monkeydri/reverse-proxy) running ubuntu 18.04 on docker hub. You can check the [Dockerfile](Dockerfile) (only used for testing purposes).
 
 Using a docker container and docker hub automated build with autotests is a cheap and simple alternative to running a full VM (ex with circle-CI) to test the setup.
 
