@@ -1,2 +1,0 @@
-#!/bin/bash 
-docker build -t $IMAGE_NAME --build-arg EMAIL=$EMAIL --build-arg URL=$URL SUBDOMAINS=$SUBDOMAINS .
