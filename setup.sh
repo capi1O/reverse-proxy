@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # get env vars from args or .env file (.env file can be mounted at docker-compose.yml level when running this image)
-source .env
+if [ -f $FILE ]; then source .env; fi
+
 EMAIL=${1:-"${EMAIL}"}
 URL=${2:-"${URL}"}
 SUBDOMAINS=${3:-"${SUBDOMAINS}"}
@@ -9,7 +10,7 @@ TEST_MODE=${4:-"${TEST_MODE}"}
 SSH_PUBLIC_KEY=${5:-"${SSH_PUBLIC_KEY}"}
 # unescape private key
 ESCAPED_SSH_PRIVATE_KEY=${6:-"${SSH_PRIVATE_KEY}"}
-SSH_PRIVATE_KEY=$(eval printf '%s\\n' "$ESCAPED_SSH_PRIVATE_KEY")
+UNESCAPED_SSH_PRIVATE_KEY=$(eval printf '%s\\n' "$ESCAPED_SSH_PRIVATE_KEY")
 
 REACHABILITY_OUTPUT="REVRSE-PROXY-REACHABLE"
 
@@ -21,7 +22,7 @@ if [ $TEST_MODE ]; then
 	nohup ncat -e "/bin/echo ${REACHABILITY_OUTPUT}" -k -l 7357 &
 
 	# add the SSH key pair
-	echo "$SSH_PRIVATE_KEY" > /home/user/.ssh/id_rsa && \
+	echo "$UNESCAPED_SSH_PRIVATE_KEY" > /home/user/.ssh/id_rsa && \
 	echo "$SSH_PUBLIC_KEY" > /home/user/.ssh/id_rsa.pub && \
 	chmod 600 /home/user/.ssh/id_rsa && \
 	chmod 600 /home/user/.ssh/id_rsa.pub
