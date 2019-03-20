@@ -6,7 +6,7 @@ EMAIL=$1
 URL=$2
 SUBDOMAINS=$3
 
-REACHABILITY_OUTPUT="REVRSE-PROXY-REACHABLE"
+REACHABILITY_OUTPUT="REVERSE-PROXY-REACHABLE"
 
 # 1. reverse-proxy container reachability - try to reach it on SUBDOMAINS[0].URL:7357, compare output with desired output
 # netcat listening on 7357 on reverse-proxy docker, with SSH tunnel setup on port 7357 to serveo.net + A record setup on subdomain.

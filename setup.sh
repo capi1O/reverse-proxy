@@ -12,7 +12,7 @@ SSH_PUBLIC_KEY=${5:-"${SSH_PUBLIC_KEY}"}
 ESCAPED_SSH_PRIVATE_KEY=${6:-"${SSH_PRIVATE_KEY}"}
 UNESCAPED_SSH_PRIVATE_KEY=$(eval printf '%s\\n' "$ESCAPED_SSH_PRIVATE_KEY")
 
-REACHABILITY_OUTPUT="REVRSE-PROXY-REACHABLE"
+REACHABILITY_OUTPUT="REVERSE-PROXY-REACHABLE"
 
 
 # establish a SSH tunnel to serveo => will listen on WAN to redirect all incoming traffic to container (so it can receive SSL certificate challenges)
