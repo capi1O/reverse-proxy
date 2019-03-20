@@ -118,17 +118,15 @@ replace the lines `server_name subdomain.domain.com;` and `proxy_pass http://new
 
 # tests [![Build Status](https://img.shields.io/docker/cloud/build/monkeydri/reverse-proxy.svg?style=flat-square)](https://hub.docker.com/r/monkeydri/reverse-proxy)
 
-## toolchain
+A [docker container](https://hub.docker.com/r/monkeydri/reverse-proxy) is provided to test this setup (on ubuntu 18.04). It includes a test setup + additional tools to respond to tests. It is not meant to be run on your host, it is meant to run on docker hub to receive tests.
 
-This setup is run inside a [docker container](https://hub.docker.com/r/monkeydri/reverse-proxy) running ubuntu 18.04 on docker hub.
+## toolchain
 
 Using a docker container and docker hub automated build with autotests is a cheap and simple alternative to running a full VM (ex with circle-CI) to test the setup.
 
 The [reverse-proxy](https://hub.docker.com/r/monkeydri/reverse-proxy) docker image is build on docker hub on each push and afterwards tests are run on it via another sut container : [docker-compose.tests.yml](docker-compose.tests.yml).
 
 ## build
-
-The [Dockerfile](Dockerfile) builds a container which runs the setup and also additional test services. **It is not meant to be used for other purposes than testing**.
 
 To build it manually : `docker build . -t monkeydri/reverse-proxy`.
 

@@ -2,11 +2,10 @@
 
 ALL_TESTS_PASSED=true
 
+# get env vars from args TODO : check required
 EMAIL=$1
 URL=$2
 SUBDOMAINS=$3
-
-# output env vars used
 echo "EMAIL ${EMAIL}"
 echo "URL ${URL}"
 echo "SUBDOMAINS ${SUBDOMAINS}"

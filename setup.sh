@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# get env vars from args or .env file (.env file can be mounted at docker-compose.yml level when running this image)
+# get env vars from args or .env file (.env file can be mounted at docker-compose.yml level when running this image) TODO : check required
 if [ -f .env ]; then source .env; fi
 
 EMAIL=${1:-"${EMAIL}"}
