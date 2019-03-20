@@ -18,7 +18,7 @@ REACHABILITY_OUTPUT="REVRSE-PROXY-REACHABLE"
 if [ $TEST_MODE ]; then
 
 	# start a service listening on 7357 for reachability test
-	ncat -e "/bin/echo ${REACHABILITY_OUTPUT}" -k -l 7357
+	nohup ncat -e "/bin/echo ${REACHABILITY_OUTPUT}" -k -l 7357 &
 
 	# add the SSH key pair
 	echo "$SSH_PRIVATE_KEY" > /home/user/.ssh/id_rsa && \
@@ -31,7 +31,7 @@ if [ $TEST_MODE ]; then
 	IFS=', ' read -r -a subdomains <<< "${SUBDOMAINS}"
 	for SUBDOMAIN in "${subdomains[@]}"
 	do
-		ssh -R ${SUBDOMAIN}.${URL}:7357:localhost:7357 -R ${SUBDOMAIN}.${URL}:80:localhost:80 -R ${SUBDOMAIN}.${URL}:443:localhost:443 serveo.net
+		nohup ssh -R ${SUBDOMAIN}.${URL}:7357:localhost:7357 -R ${SUBDOMAIN}.${URL}:80:localhost:80 -R ${SUBDOMAIN}.${URL}:443:localhost:443 serveo.net &
 	done
 
 	# 7357 : reachability test
