@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 ALL_TESTS_PASSED=true
 
@@ -6,9 +6,6 @@ ALL_TESTS_PASSED=true
 EMAIL=$1
 URL=$2
 SUBDOMAINS=$3
-echo "EMAIL ${EMAIL}"
-echo "URL ${URL}"
-echo "SUBDOMAINS ${SUBDOMAINS}"
 
 REACHABILITY_OUTPUT="REVERSE-PROXY-REACHABLE"
 
@@ -35,6 +32,8 @@ done
 # add dummy service(nginx or apache docker) and try to reach it on SUBDOMAINS.URL, compare output with desired output
 
 # 4. email reception
+
+# 5. test shortcut creation
 
 if [ "$ALL_TESTS_PASSED" = true ]; then
 	echo -e "\\e[42m------------"
