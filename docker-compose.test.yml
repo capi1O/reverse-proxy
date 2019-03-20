@@ -6,12 +6,7 @@ services:
     # override CMD to pass docker hub build environment variables 
     command: ["sh", "-c", "/home/user/dockers/reverse-proxy/setup.sh ${EMAIL} ${URL} ${SUBDOMAINS} true ${SSH_PUBLIC_KEY} ${SSH_PRIVATE_KEY}"]
   sut:
-    build:
-      context: ./tests/
-      args:
-        - EMAIL=${EMAIL}
-        - URL=${URL}
-        - SUBDOMAINS=${SUBDOMAINS}
+    build: ./tests/
     environment:
       - EMAIL
       - URL
