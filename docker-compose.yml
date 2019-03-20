@@ -13,14 +13,14 @@ services:
       - PUID=1000
       - EMAIL="${EMAIL}"
       - URL="${URL}"
-      - SUBDOMAINS="${DOMAIN}"
+      - SUBDOMAINS="${SUBDOMAINS}"
       - VALIDATION=http
       - TZ=Europe/Paris
     volumes:
       - $PWD/config:/config
     networks:
       - nginx-net
-    
+
 networks:
   nginx-net:
    driver: bridge
