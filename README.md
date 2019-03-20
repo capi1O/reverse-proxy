@@ -120,15 +120,23 @@ replace the lines `server_name subdomain.domain.com;` and `proxy_pass http://new
 
 ## toolchain
 
-This setup is run on a [docker container](https://hub.docker.com/r/monkeydri/reverse-proxy) running ubuntu 18.04 on docker hub. You can check the [Dockerfile](Dockerfile) (only used for testing purposes).
+This setup is run inside a [docker container](https://hub.docker.com/r/monkeydri/reverse-proxy) running ubuntu 18.04 on docker hub.
 
 Using a docker container and docker hub automated build with autotests is a cheap and simple alternative to running a full VM (ex with circle-CI) to test the setup.
 
-The [reverse-proxy](https://hub.docker.com/r/monkeydri/reverse-proxy) docker image is build on docker hub on each push and afterwards tests are run (still on docker hub) : [docker-compose.tests.yml](docker-compose.tests.yml) runs a container based on the previously built image alongside another container which runs tests against the first container.
+The [reverse-proxy](https://hub.docker.com/r/monkeydri/reverse-proxy) docker image is build on docker hub on each push and afterwards tests are run on it via another sut container : [docker-compose.tests.yml](docker-compose.tests.yml).
+
+## build
+
+The [Dockerfile](Dockerfile) builds a container which runs the setup and also additional test services. **It is not meant to be used for other purposes than testing**.
+
+To build it manually : `docker build . -t monkeydri/reverse-proxy`.
+
+Then run it with required env vars : `docker run --rm --env-file=.env -it monkeydri/reverse-proxy bash`. To override entrypoint : `docker run --rm --env-file=.env --entrypoint="/bin/sh" -it monkeydri/reverse-proxy -c /home/user/dockers/reverse-proxy/setup.sh`.
 
 ## connect the docker container to the world
 
-[serveo](https://serveo.net/) is used to proxy let's encrypt bot request to the test container.
+[serveo](https://serveo.net/) is used to proxy let's encrypt bot requests to the test container.
 
 - generate SSH key pair
 - add an A record subdomain.domain.com => 159.89.214.31 (serveo.net)
@@ -147,6 +155,8 @@ source : https://serveo.net/
 where SSH_PUBLIC_KEY=$(cat ~/.ssh/id_rsa_serveo.pub) <= path to previsouly generated SSH public key
 and SSH_PRIVATE_KEY=$(cat ~/.ssh/id_rsa_serveo) <= path to previsouly generated SSH private key
 
+/!\ the private key is multiline so to use it in an env file or on docker hub it must be escaped : `printf %q $SSH_PRIVATE_KEY`.
+
 Those env vars are passed to the [reverse-proxy](https://hub.docker.com/r/monkeydri/reverse-proxy) container so it can connect to serveo on a custom domain.
 
 ## tests actually run (see [tests.sh](tests/tests.sh))
@@ -160,4 +170,4 @@ Those env vars are passed to the [reverse-proxy](https://hub.docker.com/r/monkey
 
 - https://blog.linuxserver.io/2017/11/28/how-to-setup-a-reverse-proxy-with-letsencrypt-ssl-for-all-your-docker-apps/
 - https://github.com/linuxserver/docker-letsencrypt/issues/71
-- https://www.digitalocean.com/community/tutorials/how-to-use-netcat-to-establish-and-test-tcp-and-udp-connections-on-a-vps
+- https://www.digitalocean.com/community/tutorials/how-to-use-netcat-to-establish-and-test-tcp-and-udp-connections-on-a-vps + https://serverfault.com/questions/346481/echo-server-with-netcat-or-socat

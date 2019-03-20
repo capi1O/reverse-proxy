@@ -7,13 +7,15 @@ URL=${2:-"${URL}"}
 SUBDOMAINS=${3:-"${SUBDOMAINS}"}
 TEST_MODE=${4:-"${TEST_MODE}"}
 SSH_PUBLIC_KEY=${5:-"${SSH_PUBLIC_KEY}"}
-SSH_PRIVATE_KEY=${6:-"${SSH_PRIVATE_KEY}"}
+# unescape private key
+ESCAPED_SSH_PRIVATE_KEY=${6:-"${SSH_PRIVATE_KEY}"}
+SSH_PRIVATE_KEY=eval printf '%s\\n' "$ESCAPED_SSH_PRIVATE_KEY"
 
 REACHABILITY_OUTPUT="reverse-proxy reachable"
 
 
 # establish a SSH tunnel to serveo => will listen on WAN to redirect all incoming traffic to container (so it can receive SSL certificate challenges)
-if [$TEST_MODE]; then
+if [ $TEST_MODE ]; then
 
 	# start a service listening on 7357 for reachability test
 	while true; do printf "${REACHABILITY_OUTPUT}" | netcat -l 7357; done
