@@ -6,6 +6,11 @@ EMAIL=$1
 URL=$2
 SUBDOMAINS=$3
 
+# output env vars used
+echo "EMAIL ${EMAIL}"
+echo "URL ${URL}"
+echo "SUBDOMAINS ${SUBDOMAINS}"
+
 REACHABILITY_OUTPUT="REVERSE-PROXY-REACHABLE"
 
 # 1. reverse-proxy container reachability - try to reach it on SUBDOMAINS[0].URL:7357, compare output with desired output
