@@ -1,9 +1,17 @@
 version: '2'
 
+
 services:
   reverse-proxy:
     image: monkeydri/reverse-proxy:latest
-    # override CMD to pass docker hub build environment variables 
+    # env vars from docker hub build environment variables 
+    environment:
+      - EMAIL
+      - URL
+      - SUBDOMAINS
+      - SSH_PUBLIC_KEY
+      - SSH_PRIVATE_KEY
+    # override CMD to pass additional env vars
     command: ["sh", "-c", "/home/user/dockers/reverse-proxy/setup.sh ${EMAIL} ${URL} ${SUBDOMAINS} true ${SSH_PUBLIC_KEY} ${SSH_PRIVATE_KEY}"]
   sut:
     build: ./tests/

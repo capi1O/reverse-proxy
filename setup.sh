@@ -1,15 +1,14 @@
 #!/bin/bash
 
-# get env vars from args or .env file (.env file can be mounted at docker-compose.yml level when running this image) TODO : check required
-if [ -f .env ]; then source .env; fi
+# get env vars from args - TODO : check required
 
-EMAIL=${1:-"${EMAIL}"}
-URL=${2:-"${URL}"}
-SUBDOMAINS=${3:-"${SUBDOMAINS}"}
-TEST_MODE=${4:-"${TEST_MODE}"}
-SSH_PUBLIC_KEY=${5:-"${SSH_PUBLIC_KEY}"}
+EMAIL=$1
+URL=$2
+SUBDOMAINS=$3
+TEST_MODE=$4
+SSH_PUBLIC_KEY=$5
 # unescape private key
-ESCAPED_SSH_PRIVATE_KEY=${6:-"${SSH_PRIVATE_KEY}"}
+ESCAPED_SSH_PRIVATE_KEY=$6
 UNESCAPED_SSH_PRIVATE_KEY=$(echo $ESCAPED_SSH_PRIVATE_KEY)
 
 REACHABILITY_OUTPUT="REVERSE-PROXY-REACHABLE"
