@@ -138,11 +138,16 @@ Then run it with required env vars : `docker run --rm --env-file=.env -it monkey
 
 [serveo](https://serveo.net/) is used to proxy let's encrypt bot requests to the test container.
 
+*Note : must use self-hosted serveo as ports 80 and 443 are most likely already used by someone else*.
+
+Setup to allow serveo to establish tunnel to the test subdomain.
+
 - generate SSH key pair
 - add an A record subdomain.domain.com => 159.89.214.31 (serveo.net)
 - add a TXT record authkeyfp=[fingerprint] where fingerprint is the SSH key fingerprint (ssh-keygen -l)
 
-source : https://serveo.net/
+*Note : those steps are required by [serveo manual](https://serveo.net/#manual) to allow custom subdomain but are optional in practice (serveo allows everything)*.
+
 
 ## setup [build env vars in docker hub](https://docs.docker.com/docker-hub/builds/#environment-variables-for-builds)
 
@@ -152,10 +157,9 @@ source : https://serveo.net/
 - SSH_PUBLIC_KEY=
 - SSH_PRIVATE_KEY=
 
-where SSH_PUBLIC_KEY=$(cat ~/.ssh/id_rsa_serveo.pub) <= path to previsouly generated SSH public key
-and SSH_PRIVATE_KEY=$(cat ~/.ssh/id_rsa_serveo) <= path to previsouly generated SSH private key
+where `SSH_PUBLIC_KEY` is output of `cat ~/.ssh/id_rsa_serveo.pub` and `SSH_PRIVATE_KEY` is escaped output of `cat ~/.ssh/id_rsa_serveo` => `printf "%q\n" "$(cat ~/.ssh/id_rsa_serveo)"` (it needs to be esacped because it is multiline).
 
-/!\ the private key is multiline so to use it in an env file or on docker hub it must be escaped : `printf %q $SSH_PRIVATE_KEY`.
+*(id_rsa_serveo being the path to the previsouly generated SSH key pair).*
 
 Those env vars are passed to the [reverse-proxy](https://hub.docker.com/r/monkeydri/reverse-proxy) container so it can connect to serveo on a custom domain.
 
