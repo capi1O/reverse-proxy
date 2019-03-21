@@ -27,4 +27,4 @@ RUN mkdir -p /home/user/.ssh && chmod 0700 /home/user/.ssh && ssh-keyscan serveo
 # copy docker files
 COPY ./docker-compose.yml ./setup.sh /home/user/dockers/reverse-proxy/
 
-CMD ["sh", "-c", "/home/user/dockers/reverse-proxy/setup.sh ${EMAIL} ${URL} ${SUBDOMAINS}"]
+CMD ["sh", "-c", "/home/user/dockers/reverse-proxy/setup.sh ${EMAIL} ${URL} ${SUBDOMAINS} ${TEST_MODE} ${SSH_PUBLIC_KEY} ${SSH_PRIVATE_KEY}"]

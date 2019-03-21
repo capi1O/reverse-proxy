@@ -4,15 +4,14 @@ version: '2'
 services:
   reverse-proxy:
     image: monkeydri/reverse-proxy:latest
-    # env vars from docker hub build environment variables 
+    # env vars with no value are taken from the same variable in the shell in which Compose is run => docker hub build environment variables
     environment:
       - EMAIL
       - URL
       - SUBDOMAINS
+      - TEST_MODE=true
       - SSH_PUBLIC_KEY
       - SSH_PRIVATE_KEY
-    # override CMD to pass additional env vars
-    command: ["sh", "-c", "/home/user/dockers/reverse-proxy/setup.sh ${EMAIL} ${URL} ${SUBDOMAINS} true ${SSH_PUBLIC_KEY} ${SSH_PRIVATE_KEY}"]
   sut:
     build: ./tests/
     environment:
