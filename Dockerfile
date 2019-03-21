@@ -1,16 +1,22 @@
 FROM ubuntu:18.04
 
+# configure remote logging service
+RUN wget -qO - https://packages.fluentbit.io/fluentbit.key | sudo apt-key add -
+RUN sudo bash -c "echo 'deb https://packages.fluentbit.io/ubuntu/bionic bionic main' >> /etc/apt/sources.list"
+
 # install required dependencies
-RUN apt-get update && apt install -y curl sudo nmap openssh-client
+RUN apt-get update && apt install -y curl sudo nmap openssh-client td-agent-bit
+
+# setup fluent bit => Timber 
+ARG TIMBER_API_KEY
+ENV TIMBER_API_KEY=${TIMBER_API_KEY}
+ARG TIMBER_SOURCE_ID
+RUN TIMBER_API_KEY=${TIMBER_API_KEY} TIMBER_SOURCE_ID=${TIMBER_SOURCE_ID} HOSTNAME="${SUBDOMAIN}.${URL}" envsubst < ./td-agent-bit.conf > /etc/td-agent-bit/td-agent-bit.conf
 
 # sudo without password
 USER root
 COPY ./sudoers /etc/sudoers
 RUN chmod 440 /etc/sudoers
-
-# configure remote logging service
-RUN curl -O https://www.loggly.com/install/configure-linux.sh && chmod +x configure-linux.sh
-RUN sudo bash configure-linux.sh -a LOGGLY_SUBDOMAIN -u LOGGLY_USERNAME
 
 # setup standard user UID:1000, GID:1000, home at /home/user
 RUN groupadd -r group -g 1000 && useradd -u 1000 -r -g group -m -d /home/user -s /sbin/nologin -c "User" user && chmod 755 /home/user

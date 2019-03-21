@@ -3,6 +3,9 @@
 # output > syslog
 exec 1> >(logger -s -t $(basename $0)) 2>&1
 
+# start logging service
+sudo service td-agent-bit start
+
 # get env vars from args - TODO : check required
 
 EMAIL=$1
