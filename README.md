@@ -27,8 +27,11 @@ The nginx reverse proxy docker manage HTTPS and redirect requests to correct doc
 	- EMAIL: admin email (ex : `URL=admin@domain.com`)
 	- URL : domain name (ex : `URL=domain.com`)
 	- SUBDOMAINS : comma-separted list of subdomains (ex : `SUBDOMAINS=www,ftp`)
+	optional env vars for remote logging :
+	- TIMBER_API_KEY
+	- TIMBER_SOURCE_ID
 - make sure the host running the let's encrypt docker is reachable on ports 80 & 443 (ex: redirect ports on router) and that every subdomain DNS records points to its WAN IP.
-- run setup script `chmod +x setup.sh && ./setup.sh`
+- run setup script `chmod +x setup.sh && source.env && ./setup.sh`
 
 ## add a new service (docker container running behind the reverse-proxy)
 
