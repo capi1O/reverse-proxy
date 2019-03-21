@@ -2,21 +2,24 @@ docker HTTPS nginx reverse-proxy setup
 
 # overview
 
-
-- nginx reverse proxy docker
-	- docker container A
-	- docker container B
-	- docker container C
-
+![overview](overview.png)
 
 The nginx reverse proxy docker manage HTTPS and redirect requests to correct docker containers based on hostname. It uses [lets-encrypt docker image](https://github.com/linuxserver/docker-letsencrypt)
 
-# dependencies
+## repository structure
+
+- reverse-proxy-setup => setup.sh *run it on your server*
+- reverse-proxy-vm => Dockerfile *used only to test setup*
+- reverse-proxy-vm-tester => tests/Dockerfile *used only for docker hub automated tests*
+
+# quickstart
+
+## dependencies
 
 - [docker](https://github.com/docker/docker-ce). for ubuntu : `curl -s https://gist.githubusercontent.com/monkeydri/43c7533b4c3b854495416a1e607fc5bf/raw/c814934ff15fba474f38fb41e52285c056169ef0/docker-setup.sh | bash`
 - [docker-compose](https://github.com/docker/compose). for ubuntu : `curl -s https://gist.githubusercontent.com/monkeydri/3c1c89d3c51d1692ef4df409ff6dc0d0/raw/ec34d23cd8bc1616157aad64714150ff719a9c10/docker-compose-setup.sh | bash`
 
-# quickstart
+## run
 
 - create directory where all docker config files will be stored : `mkdir dockers`
 - `git clone git@github.com/monkeydri/docker-https-nginx-reverse-proxy.git reverse-proxy && cd reverse-proxy`
@@ -27,7 +30,7 @@ The nginx reverse proxy docker manage HTTPS and redirect requests to correct doc
 - make sure the host running the let's encrypt docker is reachable on ports 80 & 443 (ex: redirect ports on router) and that every subdomain DNS records points to its WAN IP.
 - run setup script `chmod +x setup.sh && ./setup.sh`
 
-# add a new service (docker container running behind the reverse-proxy)
+## add a new service (docker container running behind the reverse-proxy)
 
 base setup : docker-compose.yml for each service are placed in respective directories inside a dir named `dockers`
 
