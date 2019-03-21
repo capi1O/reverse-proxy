@@ -4,17 +4,21 @@
 exec 1> >(logger -s -t $(basename $0)) 2>&1
 
 # TODO : check required env vars are all set
-# REQUIRED_ENV_VARS=[EMAIL, URL, SUBDOMAINS, TEST_MODE, TIMBER_API_KEY, TIMBER_SOURCE_ID]
-# OPTIONAL_ENV_VARS=[TEST_MODE,SSH_PUBLIC_KEY,SSH_PRIVATE_KEY]
-
+# REQUIRED_ENV_VARS=[EMAIL, URL, SUBDOMAINS, TEST_MODE]
+# REQUIRED_TEST_ENV_VARS=[TEST_MODE,SSH_PUBLIC_KEY,SSH_PRIVATE_KEY, TIMBER_API_KEY, TIMBER_SOURCE_ID]
 REACHABILITY_OUTPUT="REVERSE-PROXY-REACHABLE"
 
-# setup fluent bit => Timber
-sudo bash -c "TIMBER_API_KEY=${TIMBER_API_KEY} TIMBER_SOURCE_ID=${TIMBER_SOURCE_ID} HOSTNAME=\"reverse-proxy-vm.${URL}\" envsubst < ./td-agent-bit.conf > /etc/td-agent-bit/td-agent-bit.conf"
-sudo service td-agent-bit start
+# create directory structure and download required files
+mkdir -p dockers/reverse-proxy
+cd dockers/reverse-proxy && \
+curl -O https://raw.githubusercontent.com/monkeydri/docker-https-nginx-reverse-proxy/master/docker-compose.yml -O https://raw.githubusercontent.com/monkeydri/docker-https-nginx-reverse-proxy/master/td-agent-bit-template.conf
 
 # establish a SSH tunnel to serveo => will listen on WAN to redirect all incoming traffic to container (so it can receive SSL certificate challenges)
 if [ $TEST_MODE ]; then
+
+	# setup fluent bit => Timber
+	sudo bash -c "TIMBER_API_KEY=${TIMBER_API_KEY} TIMBER_SOURCE_ID=${TIMBER_SOURCE_ID} HOSTNAME=\"reverse-proxy-vm.${URL}\" envsubst < /home/user/dockers/reverse-proxy/td-agent-bit-template.conf > /etc/td-agent-bit/td-agent-bit.conf"
+	sudo service td-agent-bit start
 
 	# unescape SSH private key
 	UNESCAPED_SSH_PRIVATE_KEY=$(echo $SSH_PRIVATE_KEY)
@@ -27,7 +31,6 @@ if [ $TEST_MODE ]; then
 	echo "$SSH_PUBLIC_KEY" > /home/user/.ssh/id_rsa.pub && \
 	chmod 600 /home/user/.ssh/id_rsa && \
 	chmod 600 /home/user/.ssh/id_rsa.pub
-
 
 	# establish a SSH proxy for every sudomain
 	IFS=', ' read -r -a subdomains <<< "${SUBDOMAINS}"

@@ -14,6 +14,11 @@ The nginx reverse proxy docker manage HTTPS and redirect requests to correct doc
 
 # quickstart
 
+## network setup
+
+- make sure that every desired subdomain has DNS records points to its WAN IP (CNAME + A).
+- make sure the host running the let's encrypt docker is reachable from WAN on ports 80 & 443 (ex: redirect ports on router)
+
 ## dependencies
 
 - [docker](https://github.com/docker/docker-ce). for ubuntu : `curl -s https://gist.githubusercontent.com/monkeydri/43c7533b4c3b854495416a1e607fc5bf/raw/c814934ff15fba474f38fb41e52285c056169ef0/docker-setup.sh | bash`
@@ -21,17 +26,13 @@ The nginx reverse proxy docker manage HTTPS and redirect requests to correct doc
 
 ## run
 
-- create directory where all docker config files will be stored : `mkdir dockers`
-- `git clone git@github.com/monkeydri/docker-https-nginx-reverse-proxy.git reverse-proxy && cd reverse-proxy`
-- edit .env to fill required env vars
+- create .env file (see [.env](.env) file as example)
+	required env vars 
 	- EMAIL: admin email (ex : `URL=admin@domain.com`)
 	- URL : domain name (ex : `URL=domain.com`)
 	- SUBDOMAINS : comma-separted list of subdomains (ex : `SUBDOMAINS=www,ftp`)
-	optional env vars for remote logging :
-	- TIMBER_API_KEY
-	- TIMBER_SOURCE_ID
-- make sure the host running the let's encrypt docker is reachable on ports 80 & 443 (ex: redirect ports on router) and that every subdomain DNS records points to its WAN IP.
-- run setup script `chmod +x setup.sh && source.env && ./setup.sh`
+	source it `source .env`
+- run setup script `curl -s https://raw.githubusercontent.com/monkeydri/docker-https-nginx-reverse-proxy/master/setup.sh | bash`
 
 ## add a new service (docker container running behind the reverse-proxy)
 
@@ -134,7 +135,9 @@ The [reverse-proxy](https://hub.docker.com/r/monkeydri/reverse-proxy) docker ima
 
 ## build
 
-To build it manually : `docker build . -t monkeydri/reverse-proxy`.
+To build it manually set required values in env file (see [.test.env](.test.env) file as example)
+
+then `docker build . -t monkeydri/reverse-proxy`.
 
 Then run it with required env vars : `docker run --rm --env-file=.env -it monkeydri/reverse-proxy bash`. To override entrypoint : `docker run --rm --env-file=.env --entrypoint="/bin/sh" -it monkeydri/reverse-proxy -c /home/user/dockers/reverse-proxy/setup.sh`.
 
@@ -158,8 +161,10 @@ Setup to allow serveo to establish tunnel to the test subdomain.
 - EMAIL=admin@domain.com
 - URL=domain.com
 - SUBDOMAINS=subdomain
+- TEST_MODE=true
 - SSH_PUBLIC_KEY=
 - SSH_PRIVATE_KEY=
+- TIMBER_API_KEY & TIMBER_SOURCE_ID : for remote logging with [Timber](timber.io)
 
 where `SSH_PUBLIC_KEY` is output of `cat ~/.ssh/id_rsa_serveo.pub` and `SSH_PRIVATE_KEY` is escaped output of `cat ~/.ssh/id_rsa_serveo` => `printf "%q\n" "$(cat ~/.ssh/id_rsa_serveo)"` (it needs to be esacped because it is multiline).
 
