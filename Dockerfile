@@ -1,7 +1,7 @@
 FROM ubuntu:18.04
 
 # install required dependencies
-RUN apt-get update && apt install -y curl wget sudo nmap openssh-client
+RUN apt-get update && apt install -y curl wget sudo nmap openssh-client gnupg2
 
 # sudo without password
 USER root
