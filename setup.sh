@@ -3,24 +3,21 @@
 # output > syslog
 exec 1> >(logger -s -t $(basename $0)) 2>&1
 
-# start logging service
-sudo service td-agent-bit start
-
-# get env vars from args - TODO : check required
-
-EMAIL=$1
-URL=$2
-SUBDOMAINS=$3
-TEST_MODE=$4
-SSH_PUBLIC_KEY=$5
-# unescape private key
-ESCAPED_SSH_PRIVATE_KEY=$6
-UNESCAPED_SSH_PRIVATE_KEY=$(echo $ESCAPED_SSH_PRIVATE_KEY)
+# TODO : check required env vars are all set
+# REQUIRED_ENV_VARS=[EMAIL, URL, SUBDOMAINS, TEST_MODE, TIMBER_API_KEY, TIMBER_SOURCE_ID]
+# OPTIONAL_ENV_VARS=[TEST_MODE,SSH_PUBLIC_KEY,SSH_PRIVATE_KEY]
 
 REACHABILITY_OUTPUT="REVERSE-PROXY-REACHABLE"
 
+# setup fluent bit => Timber
+TIMBER_API_KEY=${TIMBER_API_KEY} TIMBER_SOURCE_ID=${TIMBER_SOURCE_ID} HOSTNAME="reverse-proxy-vm.${URL}" envsubst < ./td-agent-bit.conf > /etc/td-agent-bit/td-agent-bit.conf
+sudo service td-agent-bit start
+
 # establish a SSH tunnel to serveo => will listen on WAN to redirect all incoming traffic to container (so it can receive SSL certificate challenges)
 if [ $TEST_MODE ]; then
+
+	# unescape SSH private key
+	UNESCAPED_SSH_PRIVATE_KEY=$(echo $SSH_PRIVATE_KEY)
 
 	# start a service listening on 7357 for reachability test
 	nohup ncat -e "/bin/echo ${REACHABILITY_OUTPUT}" -k -l 7357 &
