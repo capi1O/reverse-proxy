@@ -10,7 +10,7 @@ exec 1> >(logger -s -t $(basename $0)) 2>&1
 REACHABILITY_OUTPUT="REVERSE-PROXY-REACHABLE"
 
 # setup fluent bit => Timber
-TIMBER_API_KEY=${TIMBER_API_KEY} TIMBER_SOURCE_ID=${TIMBER_SOURCE_ID} HOSTNAME="reverse-proxy-vm.${URL}" envsubst < ./td-agent-bit.conf > /etc/td-agent-bit/td-agent-bit.conf
+sudo bash -c "TIMBER_API_KEY=${TIMBER_API_KEY} TIMBER_SOURCE_ID=${TIMBER_SOURCE_ID} HOSTNAME=\"reverse-proxy-vm.${URL}\" envsubst < ./td-agent-bit.conf > /etc/td-agent-bit/td-agent-bit.conf"
 sudo service td-agent-bit start
 
 # establish a SSH tunnel to serveo => will listen on WAN to redirect all incoming traffic to container (so it can receive SSL certificate challenges)
