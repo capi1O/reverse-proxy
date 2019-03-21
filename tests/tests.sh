@@ -1,14 +1,9 @@
 #!/bin/bash
 
-# output > syslog
-exec 1> >(logger -s -t $(basename $0)) 2>&1
-
 ALL_TESTS_PASSED=true
 
-# get env vars from args TODO : check required
-EMAIL=$1
-URL=$2
-SUBDOMAINS=$3
+# TODO : check required env vars are all set
+# REQUIRED_ENV_VARS=[EMAIL, URL, SUBDOMAINS]
 
 REACHABILITY_OUTPUT="REVERSE-PROXY-REACHABLE"
 

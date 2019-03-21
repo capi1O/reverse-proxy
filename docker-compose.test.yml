@@ -19,7 +19,5 @@ services:
       - EMAIL
       - URL
       - SUBDOMAINS
-      - LOGGLY_SUBDOMAIN
-      - LOGGLY_USERNAME
     depends_on:
       - reverse-proxy
