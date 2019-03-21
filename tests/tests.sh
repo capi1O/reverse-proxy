@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# output > syslog
+exec 1> >(logger -s -t $(basename $0)) 2>&1
+
 ALL_TESTS_PASSED=true
 
 # get env vars from args TODO : check required

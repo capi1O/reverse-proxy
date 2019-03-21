@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# output > syslog
+exec 1> >(logger -s -t $(basename $0)) 2>&1
+
 # get env vars from args - TODO : check required
 
 EMAIL=$1
@@ -12,7 +15,6 @@ ESCAPED_SSH_PRIVATE_KEY=$6
 UNESCAPED_SSH_PRIVATE_KEY=$(echo $ESCAPED_SSH_PRIVATE_KEY)
 
 REACHABILITY_OUTPUT="REVERSE-PROXY-REACHABLE"
-
 
 # establish a SSH tunnel to serveo => will listen on WAN to redirect all incoming traffic to container (so it can receive SSL certificate challenges)
 if [ $TEST_MODE ]; then

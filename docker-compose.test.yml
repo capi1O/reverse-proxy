@@ -9,6 +9,8 @@ services:
       - EMAIL
       - URL
       - SUBDOMAINS
+      - LOGGLY_SUBDOMAIN
+      - LOGGLY_USERNAME
       - TEST_MODE=true
       - SSH_PUBLIC_KEY
       - SSH_PRIVATE_KEY
@@ -18,5 +20,7 @@ services:
       - EMAIL
       - URL
       - SUBDOMAINS
+      - LOGGLY_SUBDOMAIN
+      - LOGGLY_USERNAME
     depends_on:
       - reverse-proxy

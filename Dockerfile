@@ -1,11 +1,16 @@
 FROM ubuntu:18.04
 
+# install required dependencies
 RUN apt-get update && apt install -y curl sudo nmap openssh-client
 
 # sudo without password
 USER root
 COPY ./sudoers /etc/sudoers
 RUN chmod 440 /etc/sudoers
+
+# configure remote logging service
+RUN curl -O https://www.loggly.com/install/configure-linux.sh && chmod +x configure-linux.sh
+RUN sudo bash configure-linux.sh -a LOGGLY_SUBDOMAIN -u LOGGLY_USERNAME
 
 # setup standard user UID:1000, GID:1000, home at /home/user
 RUN groupadd -r group -g 1000 && useradd -u 1000 -r -g group -m -d /home/user -s /sbin/nologin -c "User" user && chmod 755 /home/user
