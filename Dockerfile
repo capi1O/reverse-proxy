@@ -1,17 +1,15 @@
 FROM ubuntu:18.04
 
 # install required dependencies
-RUN apt-get update && apt install -y curl wget sudo nmap openssh-client gnupg2
+RUN apt-get update && apt install -y curl sudo nmap openssh-client wget gnupg2
 
 # sudo without password
 USER root
 COPY ./sudoers /etc/sudoers
 RUN chmod 440 /etc/sudoers
 
-# setup remote logging service TODO : run from bash script
-RUN wget -qO - https://packages.fluentbit.io/fluentbit.key | sudo apt-key add -
-RUN sudo bash -c "echo 'deb https://packages.fluentbit.io/ubuntu/bionic bionic main' >> /etc/apt/sources.list"
-RUN apt-get update && apt install -y td-agent-bit
+# setup remote logging service
+RUN curl -s https://gist.githubusercontent.com/monkeydri/0993f016235072546d2cc68a5cbd2726/raw/86fb44697bb43689bb58c99e73194b07d97d416b/setup-fluentbit.sh | bash
 
 # setup standard user UID:1000, GID:1000, home at /home/user
 RUN groupadd -r group -g 1000 && useradd -u 1000 -r -g group -m -d /home/user -s /sbin/nologin -c "User" user && chmod 755 /home/user
