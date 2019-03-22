@@ -32,7 +32,7 @@ The nginx reverse proxy docker manage HTTPS and redirect requests to correct doc
 	- URL : domain name (ex : `URL=domain.com`)
 	- SUBDOMAINS : comma-separted list of subdomains (ex : `SUBDOMAINS=www,ftp`)
 	source it `source .env`
-- run setup script `curl -s https://raw.githubusercontent.com/monkeydri/docker-https-nginx-reverse-proxy/master/setup.sh | bash`
+- run setup script `curl -s https://raw.githubusercontent.com/monkeydri/reverse-proxy/master/setup.sh | bash`
 
 ## add a new service (docker container running behind the reverse-proxy)
 
@@ -125,21 +125,23 @@ replace the lines `server_name subdomain.domain.com;` and `proxy_pass http://new
 
 # tests [![Build Status](https://img.shields.io/docker/cloud/build/monkeydri/reverse-proxy.svg?style=flat-square)](https://hub.docker.com/r/monkeydri/reverse-proxy)
 
-A [docker container](https://hub.docker.com/r/monkeydri/reverse-proxy) is provided to test this setup (on ubuntu 18.04). It includes a test setup + additional tools to respond to tests. It is not meant to be run on your host, it is meant to run on docker hub to receive tests.
+A [docker container-vm](https://hub.docker.com/r/monkeydri/reverse-proxy-vm) is provided to test this setup (on ubuntu 18.04). It includes a test setup + additional tools to respond to tests. It is not meant to be run on your host to get a reverse-proxy, it is used for testing.
 
 ## toolchain
 
 Using a docker container and docker hub automated build with autotests is a cheap and simple alternative to running a full VM (ex with circle-CI) to test the setup.
 
-The [reverse-proxy](https://hub.docker.com/r/monkeydri/reverse-proxy) docker image is build on docker hub on each push and afterwards tests are run on it via another sut container : [docker-compose.tests.yml](docker-compose.tests.yml).
+The [reverse-proxy-vm](https://hub.docker.com/r/monkeydri/reverse-proxy-vm) docker image is build on docker hub on each push and afterwards tests are run on it via another `sut` container : [docker-compose.tests.yml](docker-compose.tests.yml).
 
 ## build
 
-To build it manually set required values in env file (see [.test.env](.test.env) file as example)
+To build it manually just `docker build . -t monkeydri/reverse-proxy-vm`.
 
-then `docker build . -t monkeydri/reverse-proxy`.
+## run
 
-Then run it with required env vars : `docker run --rm --env-file=.env -it monkeydri/reverse-proxy bash`. To override entrypoint : `docker run --rm --env-file=.env --entrypoint="/bin/sh" -it monkeydri/reverse-proxy -c /home/user/dockers/reverse-proxy/setup.sh`.
+Set required values in env file (see [.test.env](.test.env) file as example).
+
+Then run it with required env vars : `docker run --name=reverse-proxy-vm --env-file=.test.env -it monkeydri/reverse-proxy-vm`. To override entrypoint : `docker run --rm --env-file=.test.env --entrypoint="/bin/sh" -it monkeydri/reverse-proxy-vm -c /home/user/dockers/reverse-proxy/setup.sh`.
 
 ## connect the docker container to the world
 
@@ -170,7 +172,7 @@ where `SSH_PUBLIC_KEY` is output of `cat ~/.ssh/id_rsa_serveo.pub` and `SSH_PRIV
 
 *(id_rsa_serveo being the path to the previsouly generated SSH key pair).*
 
-Those env vars are passed to the [reverse-proxy](https://hub.docker.com/r/monkeydri/reverse-proxy) container so it can connect to serveo on a custom domain.
+Those env vars are passed to the [reverse-proxy-vm](https://hub.docker.com/r/monkeydri/reverse-proxy-vm) container so it can connect to serveo on a custom domain.
 
 ## tests actually run (see [tests.sh](tests/tests.sh))
 

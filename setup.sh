@@ -11,7 +11,7 @@ REACHABILITY_OUTPUT="REVERSE-PROXY-REACHABLE"
 # create directory structure and download required files
 mkdir -p dockers/reverse-proxy
 cd dockers/reverse-proxy && \
-curl -O https://raw.githubusercontent.com/monkeydri/docker-https-nginx-reverse-proxy/master/docker-compose.yml
+curl -O https://raw.githubusercontent.com/monkeydri/reverse-proxy/master/docker-compose.yml
 
 # establish a SSH tunnel to serveo => will listen on WAN to redirect all incoming traffic to container (so it can receive SSL certificate challenges)
 if [ $TEST_MODE ]; then
