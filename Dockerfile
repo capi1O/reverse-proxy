@@ -29,4 +29,4 @@ RUN mkdir -p /home/user/.ssh && chmod 0700 /home/user/.ssh && ssh-keyscan serveo
 # copy docker files
 COPY ./setup.sh /home/user/
 
-CMD ["sh", "-c", "/home/user/setup.sh"]
+ENTRYPOINT ["sh", "-c", "/home/user/setup.sh"]
