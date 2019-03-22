@@ -1,9 +1,21 @@
 #!/bin/bash
 
+function check_env_vars ()
+{
+	ENV_VARS=("$@")
+	for ENV_VAR in "${1[@]}"; do
+		if ! [[ -v $ENV_VAR ]]; then
+			echo -e "\\e[91mrequired env var $ENV_VAR is not defined"
+			exit 1
+		fi
+	done
+}
+
 ALL_TESTS_PASSED=true
 
-# TODO : check required env vars are all set
-# REQUIRED_ENV_VARS=[EMAIL, URL, SUBDOMAINS]
+# check that all required env vars are set
+REQUIRED_ENV_VARS=("EMAIL" "URL" "SUBDOMAINS")
+check_env_vars "${REQUIRED_ENV_VARS[@]}"
 
 REACHABILITY_OUTPUT="REVERSE-PROXY-REACHABLE"
 

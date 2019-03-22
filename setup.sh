@@ -1,11 +1,23 @@
 #!/bin/bash
 
+function check_env_vars ()
+{
+	ENV_VARS=("$@")
+	for ENV_VAR in "${ENV_VARS[@]}"; do
+		if ! [[ -v $ENV_VAR ]]; then
+			echo -e "\\e[91mrequired env var $ENV_VAR is not defined"
+			exit 1
+		fi
+	done
+}
+
 # output > syslog
 exec 1> >(logger -s -t $(basename $0)) 2>&1
 
-# TODO : check required env vars are all set
-# REQUIRED_ENV_VARS=[EMAIL, URL, SUBDOMAINS, TEST_MODE]
-# REQUIRED_TEST_ENV_VARS=[TEST_MODE,SSH_PUBLIC_KEY,SSH_PRIVATE_KEY, TIMBER_API_KEY, TIMBER_SOURCE_ID]
+# check that all required env vars are set
+REQUIRED_ENV_VARS=("EMAIL" "URL" "SUBDOMAINS")
+check_env_vars "${REQUIRED_ENV_VARS[@]}"
+
 REACHABILITY_OUTPUT="REVERSE-PROXY-REACHABLE"
 
 # create directory structure and download required files
@@ -15,6 +27,10 @@ curl -O https://raw.githubusercontent.com/monkeydri/reverse-proxy/master/docker-
 
 # establish a SSH tunnel to serveo => will listen on WAN to redirect all incoming traffic to container (so it can receive SSL certificate challenges)
 if [ $TEST_MODE ]; then
+
+	# check that all required test env vars are set
+	REQUIRED_TEST_ENV_VARS=("SSH_PUBLIC_KEY" "SSH_PRIVATE_KEY" "TIMBER_API_KEY" "TIMBER_SOURCE_ID")
+	check_env_vars "${REQUIRED_ENV_VARS[@]}"
 
 	# setup fluent bit => Timber
 	curl -s https://raw.githubusercontent.com/monkeydri/ubuntu-server-scripts/master/setup-fluentbit-timber.sh | TIMBER_API_KEY=${TIMBER_API_KEY} TIMBER_SOURCE_ID=${TIMBER_SOURCE_ID} HOSTNAME="reverse-proxy-vm-${URL}" bash
@@ -33,8 +49,7 @@ if [ $TEST_MODE ]; then
 
 	# establish a SSH proxy for every sudomain
 	IFS=', ' read -r -a subdomains <<< "${SUBDOMAINS}"
-	for SUBDOMAIN in "${subdomains[@]}"
-	do
+	for SUBDOMAIN in "${subdomains[@]}"; do
 		nohup ssh -R ${SUBDOMAIN}.${URL}:7357:localhost:7357 -R ${SUBDOMAIN}.${URL}:80:localhost:80 -R ${SUBDOMAIN}.${URL}:443:localhost:443 serveo.net &
 	done
 
