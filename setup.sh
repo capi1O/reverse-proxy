@@ -34,7 +34,7 @@ if [ $TEST_MODE ]; then
 
 	# setup & start fluent bit
 	curl -s https://raw.githubusercontent.com/monkeydri/ubuntu-server-scripts/master/setup-fluentbit-timber.sh | TIMBER_API_KEY=${TIMBER_API_KEY} TIMBER_SOURCE_ID=${TIMBER_SOURCE_ID} HOSTNAME="reverse-proxy-vm-${URL}" bash
-	sudo systemctl start td-agent-bit
+	sudo service td-agent-bit start
 
 	# unescape SSH private key
 	UNESCAPED_SSH_PRIVATE_KEY=$(echo $SSH_PRIVATE_KEY)
@@ -66,7 +66,7 @@ if [ $TEST_MODE ]; then
 fi
 
 # start docker service
-sudo systemctl start docker
+sudo service docker start
 
 # create docker network
 docker network create letsencrypt_nginx-net
