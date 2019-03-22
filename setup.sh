@@ -17,7 +17,7 @@ curl -O https://raw.githubusercontent.com/monkeydri/docker-https-nginx-reverse-p
 if [ $TEST_MODE ]; then
 
 	# setup fluent bit => Timber
-	curl -s https://raw.githubusercontent.com/monkeydri/ubuntu-server-scripts/master//setup-fluentbit-timber.sh | TIMBER_API_KEY=${TIMBER_API_KEY} TIMBER_SOURCE_ID=${TIMBER_SOURCE_ID} HOSTNAME="reverse-proxy-vm-${URL}" bash
+	curl -s https://raw.githubusercontent.com/monkeydri/ubuntu-server-scripts/master/setup-fluentbit-timber.sh | TIMBER_API_KEY=${TIMBER_API_KEY} TIMBER_SOURCE_ID=${TIMBER_SOURCE_ID} HOSTNAME="reverse-proxy-vm-${URL}" bash
 
 	# unescape SSH private key
 	UNESCAPED_SSH_PRIVATE_KEY=$(echo $SSH_PRIVATE_KEY)
