@@ -13,6 +13,7 @@ services:
       - TEST_MODE=true
       - SSH_PUBLIC_KEY
       - SSH_PRIVATE_KEY
+    tty: true
   sut:
     build: ./tests/
     environment:
