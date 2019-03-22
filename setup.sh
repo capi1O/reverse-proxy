@@ -12,7 +12,7 @@ function check_env_vars ()
 }
 
 # output > syslog
-exec 1> >(logger -s -t $(basename $0)) 2>&1
+# exec 1> >(logger -s -t $(basename $0)) 2>&1
 
 # check that all required env vars are set
 REQUIRED_ENV_VARS=("EMAIL" "URL" "SUBDOMAINS")
@@ -32,8 +32,9 @@ if [ $TEST_MODE ]; then
 	REQUIRED_TEST_ENV_VARS=("SSH_PUBLIC_KEY" "SSH_PRIVATE_KEY" "TIMBER_API_KEY" "TIMBER_SOURCE_ID")
 	check_env_vars "${REQUIRED_ENV_VARS[@]}"
 
-	# setup fluent bit => Timber
+	# setup & start fluent bit
 	curl -s https://raw.githubusercontent.com/monkeydri/ubuntu-server-scripts/master/setup-fluentbit-timber.sh | TIMBER_API_KEY=${TIMBER_API_KEY} TIMBER_SOURCE_ID=${TIMBER_SOURCE_ID} HOSTNAME="reverse-proxy-vm-${URL}" bash
+	sudo systemctl start td-agent-bit
 
 	# unescape SSH private key
 	UNESCAPED_SSH_PRIVATE_KEY=$(echo $SSH_PRIVATE_KEY)
@@ -63,6 +64,9 @@ if [ $TEST_MODE ]; then
 	# client => subdomain.url:443 => serveo.net:443 <===ssh===> reverse-proxy (running on docker hub)
 
 fi
+
+# start docker service
+sudo systemctl start docker
 
 # create docker network
 docker network create letsencrypt_nginx-net
