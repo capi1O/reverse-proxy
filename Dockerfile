@@ -1,7 +1,7 @@
 FROM ubuntu:18.04
 
 # install required dependencies
-RUN apt-get update && apt install -y curl sudo nmap openssh-client wget gnupg2
+RUN apt-get update && apt install -y curl sudo nmap openssh-client wget gnupg2 gettext
 
 # sudo without password
 USER root
